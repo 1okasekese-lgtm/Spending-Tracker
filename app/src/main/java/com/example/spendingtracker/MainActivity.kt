@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -151,21 +152,45 @@ fun ViewScreen(
     modifier: Modifier = Modifier,
     onBack: () -> Unit
 ) {
-    val dates = (7..13).map { day -> Calendar.getInstance().apply { set(2026, Calendar.OCTOBER, day) } }
+    val dates = ( 7..13).map { day -> Calendar.getInstance().apply { set(2026, Calendar.OCTOBER, day) } }
+    val DailyBudget = arrayOf(
+        500,250,250,1000,500,600,200)
+    val DailySpent = arrayOf(
+        340,250,300,800,300,250,85)
+    val Comment = arrayOf(
+        "Grocery Shopping", "Takeaway","Petrol","Date Night","Miscellaneous","Personal Care","Snacks"
+    )
     Column(
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
-        dates.forEach { date ->
-            Text(
-                "${date.get(Calendar.OCTOBER.DAY_OF_MONTH)}/10/2026"
-            )
+        Text(
+            text = "All Spending",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Row {
+            Text("Date", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
+            Text("Budget", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
+            Text("Spent", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
+            Text("Comment", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
         }
 
-        Text("All Spending")
+        dates.forEachIndexed { index, date ->
+            Row {
+                Text("${date.get(Calendar.DAY_OF_MONTH)}/10", modifier = Modifier.weight(1f))
+                Text("R${DailyBudget[index]}", modifier = Modifier.weight(1f))
+                Text("R${DailySpent[index]}", modifier = Modifier.weight(1f))
+                Text(Comment[index], modifier = Modifier.weight(1f))
+            }
+        }
 
-        Button(onClick = onBack) {
+        Button(
+            onClick = onBack,
+            modifier = Modifier.padding(top = 16.dp)
+        ) {
             Text("Back")
         }
     }
