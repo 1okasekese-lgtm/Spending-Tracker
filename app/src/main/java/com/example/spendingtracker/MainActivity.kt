@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -24,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -33,64 +35,76 @@ import kotlinx.coroutines.delay
 import java.time.LocalDate
 
 class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
 
-        setContent {
-            SpendingTrackerTheme {
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
 
-                var currentScreen by remember {
-                    mutableStateOf("splash")
-                }
+            setContent {
+                SpendingTrackerTheme {
 
-                LaunchedEffect(Unit) {
-                    delay(3000)
-                    currentScreen = "main"
-                }
+                    var currentScreen by remember {
+                        mutableStateOf("splash")
+                    }
 
-                Scaffold(
-                    modifier = Modifier.fillMaxSize()
-                ) { innerPadding ->
+                    val DailyBudget = arrayOf(
+                        500.0, 250.0, 1000.0,
+                        500.0, 600.0, 200.0, 0.0
+                    )
 
-                    when (currentScreen) {
+                    val DailySpent = arrayOf(
+                        340.0, 250.0, 300.0,
+                        800.0, 300.0, 250.0, 85.0
+                    )
 
-                        "splash" -> SplashScreen(
-                            modifier = Modifier.padding(innerPadding)
-                        )
+                    LaunchedEffect(Unit) {
+                        delay(3000)
+                        currentScreen = "main"
+                    }
 
-                        "main" -> MainScreen(
-                            modifier = Modifier.padding(innerPadding),
-                            onViewSpending = {
-                                currentScreen = "view"
-                            },
-                            onCalculate = {
-                                currentScreen = "calculate"
-                            },
-                            onExit = {
-                                finishAffinity()
-                            }
-                        )
+                    Scaffold { innerPadding ->
 
-                        "view" -> ViewScreen(
-                            modifier = Modifier.padding(innerPadding),
-                            onBack = {
-                                currentScreen = "main"
-                            }
-                        )
+                        when (currentScreen) {
 
-                        "calculate" -> CalculateScreen(
-                            modifier = Modifier.padding(innerPadding),
-                            onBack = {
-                                currentScreen = "main"
-                            }
-                        )
+                            "splash" -> com.example.spendingtracker.SplashScreen(
+                                modifier = Modifier.padding(innerPadding)
+                            )
+
+                            "main" -> com.example.spendingtracker.MainScreen(
+                                modifier = Modifier.padding(innerPadding),
+                                onViewSpending = {
+                                    currentScreen = "view"
+                                },
+                                onCalculate = {
+                                    currentScreen = "calculate"
+                                },
+                                onExit = {
+                                    finishAffinity()
+                                }
+                            )
+
+                            "view" -> com.example.spendingtracker.ViewScreen(
+                                modifier = Modifier.padding(innerPadding),
+                                DailyBudget = DailyBudget,
+                                DailySpent = DailySpent,
+                                onBack = {
+                                    currentScreen = "main"
+                                }
+                            )
+
+                            "calculate" -> com.example.spendingtracker.CalculateScreen(
+                                modifier = Modifier.padding(innerPadding),
+                                DailyBudget = DailyBudget,
+                                DailySpent = DailySpent,
+                                onBack = {
+                                    currentScreen = "main"
+                                }
+                            )
+                        }
                     }
                 }
             }
         }
     }
-}
 
 @Composable
 fun SplashScreen(modifier: Modifier = Modifier) {
@@ -199,18 +213,76 @@ fun ViewScreen(
 @Composable
 fun CalculateScreen(
     modifier: Modifier = Modifier,
+    DailyBudget: Array<Double>,
+    DailySpent: Array<Double>,
     onBack: () -> Unit
 ) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("Calculate Remaining Budget")
 
-        Button(onClick = onBack) {
-            Text("Back")
+    var showResults by remember {
+        mutableStateOf(false)
+    }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+
+        Text(
+            text = "Budget Calculation",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Button(
+            onClick = { showResults = true },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Calculate Remaining Budget")
+        }
+
+        if (showResults) {
+
+            if (DailyBudget.size != 7 || DailySpent.size != 7) {
+
+                Text(
+                    text = "Error: Budget and spending data must contain 7 days.",
+                    color = Color.Red
+                )
+
+            } else {
+
+                Text(
+                    text = "Daily Remaining Budget",
+                    fontWeight = FontWeight.Bold
+                )
+
+                (7..13).forEachIndexed { index, day ->
+
+                    val remaining =
+                        DailyBudget[index] - DailySpent[index]
+
+                    Text(
+                        text = "$day/10/2026: R${"%.2f".format(remaining)}"
+                    )
+
+                    if (remaining < 0) {
+                        Text(
+                            text = "You exceeded your budget by R${"%.2f".format(-remaining)}",
+                            color = Color.Red
+                        )
+                    }
+                }
+            }
+        }
+
+
+        Button(
+            onClick = onBack,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Back to Main Screen")
         }
     }
 }
-
