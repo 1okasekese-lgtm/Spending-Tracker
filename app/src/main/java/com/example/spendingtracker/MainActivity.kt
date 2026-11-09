@@ -1,5 +1,6 @@
 package com.example.spendingtracker
 
+import android.icu.util.Calendar
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.spendingtracker.ui.theme.SpendingTrackerTheme
 import kotlinx.coroutines.delay
+import java.time.LocalDate
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -149,11 +151,18 @@ fun ViewScreen(
     modifier: Modifier = Modifier,
     onBack: () -> Unit
 ) {
+    val dates = (7..13).map { day -> Calendar.getInstance().apply { set(2026, Calendar.OCTOBER, day) } }
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        dates.forEach { date ->
+            Text(
+                "${date.get(Calendar.OCTOBER.DAY_OF_MONTH)}/10/2026"
+            )
+        }
+
         Text("All Spending")
 
         Button(onClick = onBack) {
@@ -179,3 +188,4 @@ fun CalculateScreen(
         }
     }
 }
+
