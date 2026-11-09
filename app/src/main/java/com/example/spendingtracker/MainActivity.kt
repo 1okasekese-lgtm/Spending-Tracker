@@ -51,19 +51,22 @@ class MainActivity : ComponentActivity() {
                     } else {
                         MainScreen(
                             modifier = Modifier.padding(innerPadding)
+                        )
+                    }
+                }
+            }
         }
     }
 }
-
 @Composable
-fun SplashScreen( modifier: Modifier = Modifier) {
+fun SplashScreen(modifier: Modifier = Modifier) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)
     ) {
         Image(
-            painter = painterResource(id= R.drawable.outline_add_shopping_cart_24),
+            painter = painterResource(id = R.drawable.outline_add_shopping_cart_24),
             contentDescription = "Image",
             modifier = Modifier.width(300.dp).height(300.dp)
         )
@@ -74,21 +77,20 @@ fun SplashScreen( modifier: Modifier = Modifier) {
         )
     }
 }
-
 @Composable
-fun MainScreen( modifier: Modifier = Modifier){
+fun MainScreen(modifier: Modifier = Modifier) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)
     ) {
-        Button() {
+        Button(onClick = {}) {
             Text("View All Spending")
         }
-        Button() {
+        Button(onClick = {}) {
             Text("Calculate Remaing Budget")
         }
-        Button() {
+        Button(onClick = {}) {
             Text("Exit")
         }
     }
