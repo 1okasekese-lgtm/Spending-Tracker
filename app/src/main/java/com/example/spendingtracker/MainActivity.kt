@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.spendingtracker.ui.theme.SpendingTrackerTheme
 import kotlinx.coroutines.delay
+import kotlin.system.exitProcess
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +51,8 @@ class MainActivity : ComponentActivity() {
                         )
                     } else {
                         MainScreen(
-                            modifier = Modifier.padding(innerPadding)
+                            modifier = Modifier.padding(innerPadding),
+                            onExit = { exitProcess(0) }
                         )
                     }
                 }
@@ -78,7 +80,8 @@ fun SplashScreen(modifier: Modifier = Modifier) {
     }
 }
 @Composable
-fun MainScreen(modifier: Modifier = Modifier) {
+fun MainScreen(modifier: Modifier = Modifier,
+               onExit: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -90,8 +93,18 @@ fun MainScreen(modifier: Modifier = Modifier) {
         Button(onClick = {}) {
             Text("Calculate Remaing Budget")
         }
-        Button(onClick = {}) {
+        Button(onClick = {onExit}) {
             Text("Exit")
         }
     }
 }
+
+@Composable
+fun ViewScreen(
+    modifier: Modifier = Modifier
+){}
+
+@Composable
+fun CalculateScreen(
+    modifier: Modifier = Modifier
+){}
