@@ -164,13 +164,12 @@ fun MainScreen(
 @Composable
 fun ViewScreen(
     modifier: Modifier = Modifier,
+    DailyBudget: Array<Double>,
+    DailySpent: Array<Double>,
     onBack: () -> Unit
 ) {
     val dates = ( 7..13).map { day -> Calendar.getInstance().apply { set(2026, Calendar.OCTOBER, day) } }
-    val DailyBudget = arrayOf(
-        500,250,250,1000,500,600,200)
-    val DailySpent = arrayOf(
-        340,250,300,800,300,250,85)
+
     val Comment = arrayOf(
         "Grocery Shopping", "Takeaway","Petrol","Date Night","Miscellaneous","Personal Care","Snacks"
     )
