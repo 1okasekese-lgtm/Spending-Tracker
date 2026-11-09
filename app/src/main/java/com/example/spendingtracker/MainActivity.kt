@@ -1,7 +1,6 @@
 package com.example.spendingtracker
 
 import android.os.Bundle
-import android.window.SplashScreen
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -25,34 +24,63 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.spendingtracker.ui.theme.SpendingTrackerTheme
 import kotlinx.coroutines.delay
-import kotlin.system.exitProcess
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
             SpendingTrackerTheme {
-                var showSplash by remember { mutableStateOf(true) }
+
+                var currentScreen by remember {
+                    mutableStateOf("splash")
+                }
+
                 LaunchedEffect(Unit) {
                     delay(3000)
-                    showSplash = false
-
+                    currentScreen = "main"
                 }
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    if (showSplash) {
-                        SplashScreen(
+
+                Scaffold(
+                    modifier = Modifier.fillMaxSize()
+                ) { innerPadding ->
+
+                    when (currentScreen) {
+
+                        "splash" -> SplashScreen(
                             modifier = Modifier.padding(innerPadding)
                         )
-                    } else {
-                        MainScreen(
+
+                        "main" -> MainScreen(
                             modifier = Modifier.padding(innerPadding),
-                            onExit = { exitProcess(0) }
+                            onViewSpending = {
+                                currentScreen = "view"
+                            },
+                            onCalculate = {
+                                currentScreen = "calculate"
+                            },
+                            onExit = {
+                                finishAffinity()
+                            }
+                        )
+
+                        "view" -> ViewScreen(
+                            modifier = Modifier.padding(innerPadding),
+                            onBack = {
+                                currentScreen = "main"
+                            }
+                        )
+
+                        "calculate" -> CalculateScreen(
+                            modifier = Modifier.padding(innerPadding),
+                            onBack = {
+                                currentScreen = "main"
+                            }
                         )
                     }
                 }
@@ -60,18 +88,25 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 @Composable
 fun SplashScreen(modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)
+        verticalArrangement = Arrangement.spacedBy(
+            12.dp,
+            Alignment.CenterVertically
+        )
     ) {
         Image(
-            painter = painterResource(id = R.drawable.outline_add_shopping_cart_24),
+            painter = painterResource(
+                id = R.drawable.outline_add_shopping_cart_24
+            ),
             contentDescription = "Image",
             modifier = Modifier.width(300.dp).height(300.dp)
         )
+
         Text(
             text = "Track Your Spending",
             fontSize = 26.sp,
@@ -79,20 +114,30 @@ fun SplashScreen(modifier: Modifier = Modifier) {
         )
     }
 }
+
 @Composable
-fun MainScreen(modifier: Modifier = Modifier,
-               onExit: () -> Unit) {
+fun MainScreen(
+    modifier: Modifier = Modifier,
+    onViewSpending: () -> Unit,
+    onCalculate: () -> Unit,
+    onExit: () -> Unit
+) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)
+        verticalArrangement = Arrangement.spacedBy(
+            12.dp,
+            Alignment.CenterVertically
+        )
     ) {
-        Button(onClick = {}) {
+        Button(onClick = onViewSpending) {
             Text("View All Spending")
         }
-        Button(onClick = {}) {
-            Text("Calculate Remaing Budget")
+
+        Button(onClick = onCalculate) {
+            Text("Calculate Remaining Budget")
         }
+
         Button(onClick = onExit) {
             Text("Exit")
         }
@@ -101,10 +146,36 @@ fun MainScreen(modifier: Modifier = Modifier,
 
 @Composable
 fun ViewScreen(
-    modifier: Modifier = Modifier
-){}
+    modifier: Modifier = Modifier,
+    onBack: () -> Unit
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("All Spending")
+
+        Button(onClick = onBack) {
+            Text("Back")
+        }
+    }
+}
 
 @Composable
 fun CalculateScreen(
-    modifier: Modifier = Modifier
-){}
+    modifier: Modifier = Modifier,
+    onBack: () -> Unit
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("Calculate Remaining Budget")
+
+        Button(onClick = onBack) {
+            Text("Back")
+        }
+    }
+}
