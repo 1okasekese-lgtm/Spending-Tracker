@@ -93,7 +93,7 @@ fun MainScreen(modifier: Modifier = Modifier,
         Button(onClick = {}) {
             Text("Calculate Remaing Budget")
         }
-        Button(onClick = {onExit}) {
+        Button(onClick = onExit) {
             Text("Exit")
         }
     }
