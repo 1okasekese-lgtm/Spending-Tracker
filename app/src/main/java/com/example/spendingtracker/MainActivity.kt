@@ -273,8 +273,12 @@ fun CalculateScreen(
                         )
                     }
                 }
+                Text("Total remaining for the week: R725",
+                    fontWeight = FontWeight.Bold
+                    )
             }
         }
+
 
 
         Button(
