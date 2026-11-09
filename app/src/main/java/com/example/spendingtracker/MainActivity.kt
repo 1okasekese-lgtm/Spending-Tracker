@@ -1,3 +1,6 @@
+//ST10544615
+//Toka Sekese
+
 package com.example.spendingtracker
 
 import android.icu.util.Calendar
@@ -105,6 +108,8 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+
 
 @Composable
 fun SplashScreen(modifier: Modifier = Modifier) {
